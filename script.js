@@ -245,23 +245,24 @@ document.addEventListener('click', (e) => {
 });
 
 // --- USER IDENTIFICATION (FAIL-SAFE) ---
-let myName = "Reechita";
+let myName = "Guest";
+let isNewUser = false;
 try {
-    myName = localStorage.getItem('deepSpaceUserName');
-    if (!myName || myName === "null") {
-        myName = prompt("Enter your name:");
-        if(!myName) myName = "Reechita";
-        localStorage.setItem('deepSpaceUserName', myName);
+    const storedName = localStorage.getItem('deepSpaceUserName');
+    if (!storedName || storedName === "null") {
+        isNewUser = true;
+    } else {
+        myName = storedName.charAt(0).toUpperCase() + storedName.slice(1).toLowerCase();
     }
 } catch(e) {
     console.warn("Storage blocked by privacy settings.");
-    myName = prompt("Enter your name:") || "Reechita";
+    isNewUser = true;
 }
-myName = myName.charAt(0).toUpperCase() + myName.slice(1).toLowerCase();
 
 const sessionKey = presenceRef.push().key;
 presenceRef.child(sessionKey).onDisconnect().remove();
-presenceRef.child(sessionKey).set({ user: myName, online: true, listening: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
+
+// We defer sending the presence payload until the welcome overlay is dismissed.
 
 // Listen for presence changes
 presenceRef.on('value', (snap) => {
@@ -1717,9 +1718,37 @@ UI_DUP.cancelBtn.onclick = () => {
 // --- WELCOME SCREEN (INITIALIZES ANCHOR) ---
 const startSessionBtn = document.getElementById('startSessionBtn');
 const welcomeOverlay = document.getElementById('welcomeOverlay');
+const welcomeHeading = document.getElementById('welcomeHeading');
+const nameInputWrapper = document.getElementById('nameInputWrapper');
+const welcomeSub = document.getElementById('welcomeSub');
+const nameInput = document.getElementById('nameInput');
 
 if (startSessionBtn && welcomeOverlay) {
+    if (isNewUser) {
+        if(nameInputWrapper) nameInputWrapper.style.display = 'block';
+        if(welcomeHeading) welcomeHeading.innerText = "Welcome";
+    } else {
+        if(welcomeSub) welcomeSub.style.display = 'block';
+        if(welcomeHeading) welcomeHeading.innerText = `Welcome Back, ${myName}`;
+    }
+
     startSessionBtn.addEventListener('click', () => {
+        if (isNewUser && nameInput) {
+            const rawName = nameInput.value.trim();
+            if (!rawName) {
+                // Shake or alert
+                nameInput.style.border = "1px solid red";
+                setTimeout(() => nameInput.style.border = "1px solid rgba(255, 255, 255, 0.1)", 1000);
+                return;
+            }
+            myName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
+            try { localStorage.setItem('deepSpaceUserName', myName); } catch(e){}
+            isNewUser = false;
+        }
+
+        // Send presence now that we have a name
+        presenceRef.child(sessionKey).set({ user: myName, online: true, listening: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
+
         welcomeOverlay.style.opacity = '0';
         welcomeOverlay.style.pointerEvents = 'none';
         setTimeout(() => { 

@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./style.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -26,7 +26,7 @@
                 <h1>Sarthak & Reechita's 💗 Rhythm</h1>
             </div>
             <div class="listening-indicator" id="listening-indicator" style="display: none; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; padding: 6px 15px; border-radius: 20px; background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,230,118,0.1);">
-                <i class="fa-solid fa-headphones"></i> <span id="listening-text">Reechita is listening</span>
+                <i class="fa-solid fa-headphones"></i> <span id="listening-text">Partner is listening</span>
                 <div style="display: flex; gap: 2px; align-items: flex-end; height: 12px; margin-left: 5px;">
                     <div style="width: 3px; background: #00e676; animation: eq-play 0.8s infinite alternate ease-in-out; border-radius:3px;"></div>
                     <div style="width: 3px; background: #00e676; animation: eq-play 0.8s infinite alternate ease-in-out 0.2s; border-radius:3px;"></div>
@@ -252,8 +252,15 @@
     <div class="overlay active" id="welcomeOverlay" style="z-index: 5000; background: #0f0518;">
         <div class="modal-card" style="text-align: center; border: 1px solid var(--primary);">
             <i class="fa-solid fa-headphones-simple" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2 style="font-size: 2rem; margin-bottom: 10px;">Welcome Back</h2>
-            <p style="color: #ccc; margin-bottom: 30px;">Tap below to sync hearts and enable audio.</p>
+            <h2 id="welcomeHeading" style="font-size: 2rem; margin-bottom: 10px;">Welcome</h2>
+            
+            <div id="nameInputWrapper" style="display: none; margin-bottom: 25px;">
+                <p style="color: #ccc; margin-bottom: 15px; font-size: 0.95rem;">Who is connecting?</p>
+                <input type="text" id="nameInput" placeholder="Enter your name..." style="width: 80%; max-width: 250px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 12px 20px; color: #fff; font-family: 'Inter', sans-serif; text-align: center; margin-bottom: 10px;">
+            </div>
+
+            <p id="welcomeSub" style="color: #ccc; margin-bottom: 30px; display: none;">Tap below to sync hearts and enable audio.</p>
+            
             <button class="ctrl-btn play btn-3d" id="startSessionBtn" style="width: 80px; height: 80px; margin: 0 auto; font-size: 2.5rem;">
                 <i class="fa-solid fa-play"></i>
             </button>
