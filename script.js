@@ -1736,9 +1736,13 @@ if (startSessionBtn && welcomeOverlay) {
         if (isNewUser && nameInput) {
             const rawName = nameInput.value.trim();
             if (!rawName) {
-                // Shake or alert
-                nameInput.style.border = "1px solid red";
-                setTimeout(() => nameInput.style.border = "1px solid rgba(255, 255, 255, 0.1)", 1000);
+                nameInput.style.border = "1px solid #ff4081";
+                const err = document.getElementById("nameErrorMsg");
+                if (err) err.style.opacity = "1";
+                setTimeout(() => {
+                    nameInput.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+                    if (err) err.style.opacity = "0";
+                }, 2000);
                 return;
             }
             myName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
